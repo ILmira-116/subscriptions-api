@@ -18,6 +18,20 @@ type SubscriptionUpdater interface {
 	UpdateSubscription(ctx context.Context, id uuid.UUID, payload payload.UpdateSubscriptionPayload) error
 }
 
+// UpdateSubscription godoc
+// @Summary Обновить подписку
+// @Description Обновляет существующую запись о подписке по ID
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param   id path string true "ID подписки (UUID)"
+// @Param   subscription body payload.UpdateSubscriptionPayload true "Данные для обновления"
+// @Success 200 {object} response.SubscriptionUpdated "Подписка успешно обновлена"
+// @Failure 400 {object} response.Error400 "Неверный UUID или JSON"
+// @Failure 404 {object} response.Error404 "Подписка не найдена"
+// @Failure 409 {object} response.Error409 "Подписка уже существует"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions/{id} [put]
 func NewUpdateSubscriptionHandler(log *logger.Logger, svcupd SubscriptionUpdater, svcget SubscriptionDeleter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Получаем ID из URL
@@ -76,6 +90,6 @@ func NewUpdateSubscriptionHandler(log *logger.Logger, svcupd SubscriptionUpdater
 
 		// Успешный ответ
 		render.Status(r, http.StatusOK)
-		render.JSON(w, r, response.SubscriptionUpdated())
+		render.JSON(w, r, response.NewSubscriptionUpdated())
 	}
 }

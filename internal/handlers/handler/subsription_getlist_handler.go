@@ -17,6 +17,18 @@ type SubscriptionLister interface {
 	ListSubscriptions(ctx context.Context, limit, offset int) ([]models.Subscription, error)
 }
 
+// ListSubscriptions godoc
+// @Summary Получить список подписок
+// @Description Возвращает список подписок с пагинацией
+// @Tags subscriptions
+// @Produce json
+// @Param limit query int false "Лимит записей" default(10)
+// @Param offset query int false "Смещение" default(0)
+// @Success 200 {object} response.ListSubscriptionsResponse "Список подписок"
+// @Failure 400 {object} response.Error400 "Неверные параметры запроса"
+// @Failure 404 {object} response.Error404 "Подписки не найдены"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions [get]
 func NewListSubscriptionsHandler(log *logger.Logger, svc SubscriptionLister) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Парсим и валидируем пагинацию

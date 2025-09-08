@@ -41,7 +41,7 @@ func (s *StoppableServer) Shutdown(ctx context.Context) error {
 	return s.Server.Shutdown(ctx)
 }
 
-// Stop форсированно закрывает сервер
+// Stop закрывает сервер
 func (s *StoppableServer) Stop() {
 	s.Log.Warn("Force stopping server")
 	_ = s.Server.Close()

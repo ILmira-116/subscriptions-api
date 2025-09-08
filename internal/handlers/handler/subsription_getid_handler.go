@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"net/http"
-	"subscriptions-api/internal/handlers/request/payload"
 	"subscriptions-api/internal/handlers/response"
 	"subscriptions-api/internal/models"
 	"subscriptions-api/internal/service"
@@ -21,33 +20,34 @@ type SubscriptionGetter interface {
 	GetSubscription(ctx context.Context, id uuid.UUID) (models.Subscription, error)
 }
 
+// GetSubscription godoc
+// @Summary Получить подписку по ID
+// @Description Возвращает данные подписки по её UUID
+// @Tags subscriptions
+// @Produce  json
+// @Param   id path string true "ID подписки (UUID)"
+// @Success 200 {object} response.GetSubscriptionResponse "Подписка найдена"
+// @Failure 400 {object} response.Error400 "Неверный UUID"
+// @Failure 404 {object} response.Error404 "Подписка не найдена"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions/{id} [get]
 func NewGetSubscriptionHandler(log *logger.Logger, svc SubscriptionGetter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Получаем ID из URL
 		idStr := chi.URLParam(r, "id")
-		subPayload := payload.GetSubscriptionPayload{}
-
-		// Валидируем UUID
 		id, err := uuid.Parse(idStr)
 		if err != nil {
 			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, response.ValidationErrorResponse{
-				Error:  "invalid request",
-				Fields: map[string]string{"id": "must be a valid UUID"},
-			})
+			render.JSON(w, r, response.Error("invalid UUID"))
 			return
 		}
-		subPayload.ID = id
 
 		// Вызываем сервис
-		sub, err := svc.GetSubscription(r.Context(), subPayload.ID)
+		sub, err := svc.GetSubscription(r.Context(), id)
 		if err != nil {
 			if errors.Is(err, service.ErrSubscriptionNotFound) {
 				render.Status(r, http.StatusNotFound)
-				render.JSON(w, r, response.ErrorResponse{
-					Error: "subscription not found",
-					Code:  "NOT_FOUND",
-				})
+				render.JSON(w, r, response.Error("subscription not found"))
 				return
 			}
 			log.Error("failed to get subscription", "error", err)

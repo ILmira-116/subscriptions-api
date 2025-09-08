@@ -4,8 +4,8 @@ import "subscriptions-api/internal/models"
 
 // Ответ на создание записи
 type CreateSubscriptionResponse struct {
-	ID      string `json:"id"`
-	Message string `json:"message"`
+	ID      string `json:"id" example:"60601fee-2bf1-4721-ae6f-7636e79a0cba"`
+	Message string `json:"message" example:"subscription created successfully"`
 }
 
 func SubscriptionCreated(id string) CreateSubscriptionResponse {
@@ -15,16 +15,16 @@ func SubscriptionCreated(id string) CreateSubscriptionResponse {
 	}
 }
 
-// Ответ на получение записи
+// GetSubscriptionResponse — ответ на получение подписки
 type GetSubscriptionResponse struct {
-	ID        string  `json:"id"`
-	UserID    string  `json:"user_id"`
-	Service   string  `json:"service"`
-	Price     int     `json:"price"`
-	StartDate string  `json:"start_date"`
-	EndDate   *string `json:"end_date,omitempty"`
-	CreatedAt string  `json:"created_at"`
-	UpdatedAt string  `json:"updated_at"`
+	ID        string  `json:"id" example:"60601fee-2bf1-4721-ae6f-7636e79a0cba"`
+	UserID    string  `json:"user_id" example:"60601fee-2bf1-4721-ae6f-7636e79a0cba"`
+	Service   string  `json:"service" example:"Yandex Plus"`
+	Price     int     `json:"price" example:"400"`
+	StartDate string  `json:"start_date" example:"07-2025"`
+	EndDate   *string `json:"end_date,omitempty" example:"08-2025"`
+	CreatedAt string  `json:"created_at" example:"2025-07-01 12:00:00"`
+	UpdatedAt string  `json:"updated_at" example:"2025-07-01 12:00:00"`
 }
 
 func SubscriptionFetched(sub models.Subscription) GetSubscriptionResponse {
@@ -46,10 +46,10 @@ func SubscriptionFetched(sub models.Subscription) GetSubscriptionResponse {
 	}
 }
 
-// Ответ на получение списка подписок
+// ListSubscriptionsResponse - Ответ на получение списка подписок
 type ListSubscriptionsResponse struct {
 	Subscriptions []GetSubscriptionResponse `json:"subscriptions"`
-	Count         int                       `json:"count"`
+	Count         int                       `json:"count" example:"2"`
 }
 
 func SubscriptionsFetched(subs []models.Subscription) ListSubscriptionsResponse {
@@ -64,20 +64,20 @@ func SubscriptionsFetched(subs []models.Subscription) ListSubscriptionsResponse 
 	}
 }
 
-// Ответ на обновление записи
-type UpdateSubscriptionResponse struct {
-	Message string `json:"message"`
+// SubscriptionUpdated - Ответ на обновление записи
+type SubscriptionUpdated struct {
+	Message string `json:"message" example:"subscription updated successfully"`
 }
 
-func SubscriptionUpdated() UpdateSubscriptionResponse {
-	return UpdateSubscriptionResponse{
+func NewSubscriptionUpdated() SubscriptionUpdated {
+	return SubscriptionUpdated{
 		Message: "subscription updated successfully",
 	}
 }
 
-// Ответ на удаление записи
+//  DeleteSubscriptionResponse - Ответ на удаление записи
 type DeleteSubscriptionResponse struct {
-	Message string `json:"message"`
+	Message string `json:"message" example:"subscription deleted successfully"`
 }
 
 func SubscriptionDeleted() DeleteSubscriptionResponse {
@@ -86,9 +86,9 @@ func SubscriptionDeleted() DeleteSubscriptionResponse {
 	}
 }
 
-// Ответ на подсчёт суммарной стоимости подписок
+// SubscriptionSummaryResponse - Ответ на подсчёт суммарной стоимости подписок
 type SubscriptionSummaryResponse struct {
-	Total int `json:"total"`
+	Total int `json:"total" example:"1200"`
 }
 
 func SubscriptionSummary(total int) SubscriptionSummaryResponse {

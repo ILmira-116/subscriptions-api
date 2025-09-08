@@ -19,6 +19,18 @@ type SubscriptionCreator interface {
 	CreateSubscription(ctx context.Context, payload payload.CreateSubscriptionPayload) (uuid.UUID, error)
 }
 
+// CreateSubscription godoc
+// @Summary Создать подписку
+// @Description Создаёт новую запись о подписке для пользователя
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param   subscription body payload.CreateSubscriptionPayload true "Новая подписка"
+// @Success 201 {object} response.GetSubscriptionResponse
+// @Failure 400 {object} response.Error400 "Неверный JSON или валидация не пройдена"
+// @Failure 409 {object} response.Error409 "Подписка уже существует"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions [post]
 func NewCreateSubscriptionHandler(log *logger.Logger, svc SubscriptionCreator) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 

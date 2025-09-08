@@ -18,12 +18,25 @@ type SubscriptionSummarizer interface {
 	SumSubscriptions(ctx context.Context, p payload.SubscriptionSummaryPayload) (int, error)
 }
 
+// SubscriptionSummary godoc
+// @Summary Подсчёт суммарной стоимости подписок
+// @Description Подсчитывает общую стоимость подписок за указанный период с фильтрацией по user_id и названию сервиса
+// @Tags subscriptions
+// @Produce json
+// @Param user_id query string false "UUID пользователя" example("60601fee-2bf1-4721-ae6f-7636e79a0cba")
+// @Param service query string false "Название сервиса" example("Yandex Plus")
+// @Param start_date query string true "Дата начала периода YYYY-MM-DD" example("2025-07-01")
+// @Param end_date query string true "Дата конца периода YYYY-MM-DD" example("2025-08-31")
+// @Success 200 {object} response.SubscriptionSummaryResponse "Сумма подписок"
+// @Failure 400 {object} response.Error400 "Неверный формат запроса или параметров"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions/summary [get]
 func NewSubscriptionSummaryHandler(log *logger.Logger, svc SubscriptionSummarizer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var p payload.SubscriptionSummaryPayload
 		q := r.URL.Query()
 
-		// Парсим user_id (опционально)
+		// Парсим user_id
 		if uid := q.Get("user_id"); uid != "" {
 			id, err := uuid.Parse(uid)
 			if err != nil {
@@ -37,7 +50,7 @@ func NewSubscriptionSummaryHandler(log *logger.Logger, svc SubscriptionSummarize
 			p.UserID = &id
 		}
 
-		// Парсим service (опционально)
+		// Парсим service
 		if s := q.Get("service"); s != "" {
 			p.Service = &s
 		}

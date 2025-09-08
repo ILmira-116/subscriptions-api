@@ -48,13 +48,13 @@ func main() {
 	// 7. Инициализация и запуск роутера
 	r := router.NewRouter(log, svc)
 
-	// 4. Создаём сервер и запускаем его
+	// 8. Создаём сервер и запускаем его
 	srv := server.NewServer(cfg, log, r)
 	srv.Start()
 
 	log.Info("Server is running")
 
-	// 5. Shutdown при сигнале
+	// 9. Shutdown при сигнале
 	shutdown.WaitForSignals(10*time.Second, log, srv)
 
 }

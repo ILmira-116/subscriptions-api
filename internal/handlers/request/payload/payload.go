@@ -12,11 +12,11 @@ var validate = validator.New()
 
 // CreateSubscriptionPayload — данные, которые приходят в запросе
 type CreateSubscriptionPayload struct {
-	UserID    uuid.UUID `json:"user_id" validate:"required"`
-	Service   string    `json:"service" validate:"required"`
-	Price     int       `json:"price" validate:"required,gt=0"`
-	StartDate string    `json:"start_date" validate:"required"`
-	EndDate   *string   `json:"end_date,omitempty"`
+	UserID    uuid.UUID `json:"user_id" validate:"required" example:"60601fee-2bf1-4721-ae6f-7636e79a0cba"`
+	Service   string    `json:"service" validate:"required" example:"Yandex Plus"`
+	Price     int       `json:"price" validate:"required,gt=0" example:"400"`
+	StartDate string    `json:"start_date" validate:"required" example:"07-2025"`
+	EndDate   *string   `json:"end_date,omitempty" example:"08-2025"`
 }
 
 // Валидация структуры запроса
@@ -32,29 +32,21 @@ func (p *CreateSubscriptionPayload) Validate() error {
 	return nil
 }
 
-// GetSubscriptionPayload — данные для запроса подписки по ID
-type GetSubscriptionPayload struct {
-	ID uuid.UUID `json:"-"`
-}
-
-// ParseAndValidate — конвертируем строку в UUID и проверяем
-func ParseAndValidate(idStr string) (*GetSubscriptionPayload, error) {
-	uid, err := uuid.Parse(idStr)
+// ParseAndValidateUUID конвертирует строку в UUID и проверяет корректность
+func ParseAndValidateUUID(idStr string) (uuid.UUID, error) {
+	id, err := uuid.Parse(idStr)
 	if err != nil {
-		return nil, fmt.Errorf("id must be a valid UUID")
+		return uuid.Nil, fmt.Errorf("id must be a valid UUID")
 	}
-
-	return &GetSubscriptionPayload{
-		ID: uid,
-	}, nil
+	return id, nil
 }
 
 // UpdateSubscriptionPayload — данные для обновления подписки
 type UpdateSubscriptionPayload struct {
-	Service   string  `json:"service" validate:"required"`
-	Price     int     `json:"price" validate:"required,gt=0"`
-	StartDate string  `json:"start_date" validate:"required"`
-	EndDate   *string `json:"end_date,omitempty"`
+	Service   string  `json:"service" validate:"required" example:"Yandex Plus"`
+	Price     int     `json:"price" validate:"required,gt=0" example:"400"`
+	StartDate string  `json:"start_date" validate:"required" example:"07-2025"`
+	EndDate   *string `json:"end_date,omitempty" example:"08-2025"`
 }
 
 func (p *UpdateSubscriptionPayload) Validate() error {

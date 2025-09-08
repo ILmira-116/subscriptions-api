@@ -5,6 +5,9 @@ import (
 	"subscriptions-api/pkg/utils/logger"
 
 	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
+
+	_ "subscriptions-api/docs"
 )
 
 type AllSubscriptionServices interface {
@@ -26,6 +29,11 @@ func NewRouter(log *logger.Logger, svc AllSubscriptionServices) *chi.Mux {
 	r.Put("/subscriptions/{id}", handler.NewUpdateSubscriptionHandler(log, svc, svc))
 	r.Delete("/subscriptions/{id}", handler.NewDeleteSubscriptionHandler(log, svc))
 	r.Get("/subscriptions/summary", handler.NewSubscriptionSummaryHandler(log, svc))
+
+	// Swagger UI
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
 
 	return r
 }

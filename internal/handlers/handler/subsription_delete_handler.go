@@ -17,6 +17,17 @@ type SubscriptionDeleter interface {
 	DeleteSubscription(ctx context.Context, id uuid.UUID) error
 }
 
+// DeleteSubscription godoc
+// @Summary Удалить подписку
+// @Description Удаляет подписку по UUID
+// @Tags subscriptions
+// @Produce json
+// @Param id path string true "ID подписки (UUID)"
+// @Success 200 {object} response.DeleteSubscriptionResponse "Подписка успешно удалена"
+// @Failure 400 {object} response.Error400 "Неверный UUID"
+// @Failure 404 {object} response.Error404 "Подписка не найдена"
+// @Failure 500 {object} response.Error500 "Внутренняя ошибка сервера"
+// @Router /subscriptions/{id} [delete]
 func NewDeleteSubscriptionHandler(log *logger.Logger, svc SubscriptionDeleter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Получаем ID из URL
