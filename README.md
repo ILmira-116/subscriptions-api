@@ -41,13 +41,11 @@ cd subscriptions-api
 
 Перед запуском сервера необходимо накатить миграции:
 
- 
 docker-compose run --rm app ./subscriptions-api -migrate
 Запуск HTTP-сервера 
 
 После применения миграций или если база уже готова, запускаем сервер:
 
- 
 docker-compose run --rm app ./subscriptions-api -serve 
 
 Приложение поднимет HTTP-сервер на порту 8080.
@@ -62,8 +60,6 @@ docker-compose up -d
 docker-compose up --build
 
 Swagger UI доступен на:
-
- 
 http://localhost:8080/swagger/index.html
 
 Пример запроса на создание подписки
