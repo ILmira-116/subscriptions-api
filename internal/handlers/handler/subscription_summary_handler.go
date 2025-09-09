@@ -59,27 +59,38 @@ func NewSubscriptionSummaryHandler(log *logger.Logger, svc SubscriptionSummarize
 		startStr := q.Get("start_date")
 		start, err := time.Parse("2006-01-02", startStr)
 		if err != nil {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, response.ValidationErrorResponse{
-				Error:  "invalid request",
-				Fields: map[string]string{"start_date": "must be YYYY-MM-DD"},
-			})
-			return
+			// пробуем формат MM-YYYY
+			start, err = time.Parse("01-2006", startStr)
+			if err != nil {
+				render.Status(r, http.StatusBadRequest)
+				render.JSON(w, r, response.ValidationErrorResponse{
+					Error:  "invalid request",
+					Fields: map[string]string{"start_date": "must be YYYY-MM-DD or MM-YYYY"},
+				})
+				return
+			}
+			// если формат MM-YYYY, ставим день = 1
+			start = time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.UTC)
 		}
-		p.StartDate = start
 
 		// Парсим end_date
 		endStr := q.Get("end_date")
 		end, err := time.Parse("2006-01-02", endStr)
 		if err != nil {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, response.ValidationErrorResponse{
-				Error:  "invalid request",
-				Fields: map[string]string{"end_date": "must be YYYY-MM-DD"},
-			})
-			return
+			// пробуем формат MM-YYYY
+			end, err = time.Parse("01-2006", endStr)
+			if err != nil {
+				render.Status(r, http.StatusBadRequest)
+				render.JSON(w, r, response.ValidationErrorResponse{
+					Error:  "invalid request",
+					Fields: map[string]string{"end_date": "must be YYYY-MM-DD or MM-YYYY"},
+				})
+				return
+			}
+			// если формат MM-YYYY, ставим последний день месяца
+			end = time.Date(end.Year(), end.Month()+1, 1, 0, 0, 0, 0, time.UTC).Add(-time.Nanosecond)
 		}
-		p.EndDate = end
+		p.StartDate = start
 
 		// Валидация payload через validator
 		if err := p.Validate(); err != nil {
@@ -95,6 +106,7 @@ func NewSubscriptionSummaryHandler(log *logger.Logger, svc SubscriptionSummarize
 			return
 		}
 
+		p.EndDate = end
 		// Вызов сервиса для подсчета суммы
 		total, err := svc.SumSubscriptions(r.Context(), p)
 		if err != nil {
