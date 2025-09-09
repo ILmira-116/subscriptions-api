@@ -35,24 +35,26 @@
 ```bash
 git clone <репозиторий>
 cd subscriptions-api
-Создайте .env или config.yaml с настройками базы данных, логгера и порта.
+Создайте .env или config.yaml с настройками базы данных, логгера и порта.```
 
-Применение миграций
+### Применение миграций
 
 Перед запуском сервера необходимо накатить миграции:
 
+```bash
 docker-compose run --rm app ./subscriptions-api -migrate
-Запуск HTTP-сервера
+Запуск HTTP-сервера``` 
 
 После применения миграций или если база уже готова, запускаем сервер:
 
-docker-compose run --rm app ./subscriptions-api -serve
+```bash
+docker-compose run --rm app ./subscriptions-api -serve``` 
 
 Приложение поднимет HTTP-сервер на порту 8080.
 
 Также можно поднять оба контейнера сразу, но миграции при этом нужно запускать отдельно:
-
-docker-compose up -d
+```bash
+docker-compose up -d``` 
 
 2. Запустите сервис через Docker Compose:
 ```bash
