@@ -35,35 +35,35 @@
 ```bash
 git clone <репозиторий>
 cd subscriptions-api
-Создайте .env или config.yaml с настройками базы данных, логгера и порта.```
+Создайте .env или config.yaml с настройками базы данных, логгера и порта. 
 
 ### Применение миграций
 
 Перед запуском сервера необходимо накатить миграции:
 
-```bash
+ 
 docker-compose run --rm app ./subscriptions-api -migrate
-Запуск HTTP-сервера``` 
+Запуск HTTP-сервера 
 
 После применения миграций или если база уже готова, запускаем сервер:
 
-```bash
-docker-compose run --rm app ./subscriptions-api -serve``` 
+ 
+docker-compose run --rm app ./subscriptions-api -serve 
 
 Приложение поднимет HTTP-сервер на порту 8080.
 
 Также можно поднять оба контейнера сразу, но миграции при этом нужно запускать отдельно:
-```bash
-docker-compose up -d``` 
+ 
+docker-compose up -d 
 
 2. Запустите сервис через Docker Compose:
-```bash
+ 
 Копировать код
 docker-compose up --build
 
 Swagger UI доступен на:
 
-```bash
+ 
 http://localhost:8080/swagger/index.html
 
 Пример запроса на создание подписки
